@@ -1262,6 +1262,43 @@ describe('ui-select tests', function() {
 
   });
 
+  it('should invoke match click callback when click on a match', function () {
+
+    scope.onMatchClickFn = function ($item, $model, $label) {
+      scope.$item = $item;
+      scope.$model = $model;
+    };
+    var el = compileTemplate(
+      '<ui-select multiple on-match-click="onMatchClickFn($item, $model)" ng-model="selection.selected"> \
+        <ui-select-match placeholder="Pick one...">{{$select.selected.name}}</ui-select-match> \
+        <ui-select-choices repeat="person.name as person in people | filter: $select.search"> \
+          <div ng-bind-html="person.name | highlight: $select.search"></div> \
+          <div ng-bind-html="person.email | highlight: $select.search"></div> \
+        </ui-select-choices> \
+      </ui-select>'
+    );
+
+    expect(scope.$item).toBeFalsy();
+    expect(scope.$model).toBeFalsy();
+
+    clickItem(el, 'Samantha');
+    clickItem(el, 'Adrian');
+    clickItem(el, 'Nicole');
+    $timeout.flush();
+
+    el.find('.ui-select-match-item').first().click();
+    $timeout.flush();
+
+    expect(scope.$item).toBe(scope.people[5]);
+    expect(scope.$model).toBe('Samantha');
+
+    el.find('.ui-select-match-item').last().click();
+    $timeout.flush();
+
+    expect(scope.$item).toBe(scope.people[6]);
+    expect(scope.$model).toBe('Nicole');
+  });
+
   it('should set $item & $model correctly when invoking callback on remove and no single prop. binding', function () {
 
     scope.onRemoveFn = function ($item, $model, $label) {

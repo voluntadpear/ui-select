@@ -30,6 +30,22 @@ uis.directive('uiSelectMultiple', ['uiSelectMinErr','$timeout', function(uiSelec
         $select.sizeSearchInput();
       };
 
+      //sets selected match index as new activeMatchIndex and triggers callback
+      ctrl.setActiveMatch = function(index) {
+        ctrl.activeMatchIndex = index;
+        var item = $select.selected[ctrl.activeMatchIndex];
+        if(item) {
+          var locals = {};
+          locals[$select.parserResult.itemName] = item;
+          $timeout(function () {
+            $select.onMatchClickCallback($scope, {
+              $item: item,
+              $model: $select.parserResult.modelMapper($scope, locals)
+            });
+          });
+        }
+      };
+
       // Remove item from multiple select
       ctrl.removeChoice = function(index){
 

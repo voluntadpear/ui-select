@@ -58,6 +58,7 @@ uis.directive('uiSelect',
         });
 
         $select.onSelectCallback = $parse(attrs.onSelect);
+        $select.onMatchClickCallback = $parse(attrs.onMatchClick);
         $select.onRemoveCallback = $parse(attrs.onRemove);
 
         //Limit the number of selections allowed
